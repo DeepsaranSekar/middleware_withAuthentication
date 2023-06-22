@@ -1,23 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="WARN">
+<Configuration>
 	<Appenders>
-		<!-- Console Appender -->
 		<Console name="Console" target="SYSTEM_OUT">
-			<PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n" />
+			<PatternLayout pattern="%d %-5level [%logger{1.}] - %msg%n" />
 		</Console>
 	</Appenders>
-	
 	<Loggers>
-		<!-- RequestResponseLogger Logger -->
-		<Logger name="com.nuance.middleware.utility.RequestResponseLogger" level="info">
+	<!-- RequestResponseLogger Logger -->
+		<Logger name="com.nuance.middleware.utility.RequestResponseLogger" level="DEBUG">
 			<AppenderRef ref="Console" />
 		</Logger>
-		<!-- Spring Security Logger -->
-		<Logger name="com.nuance.middleware.security.*" level="debug" additivity="false">
+		<Logger name="com.nuance.middleware.security.CustomAuthenticationProvider" level="DEBUG" >
 			<AppenderRef ref="Console" />
 		</Logger>
-		
-		<Root level="debug">
+		<Root level="DEBUG">
 			<AppenderRef ref="Console" />
 		</Root>
 	</Loggers>

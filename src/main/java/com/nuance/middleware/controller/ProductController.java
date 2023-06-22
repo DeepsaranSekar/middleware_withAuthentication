@@ -24,7 +24,7 @@ import com.nuance.middleware.utility.RequestResponseLogger;
 
 
 @RestController
-@RequestMapping("/products")
+@RequestMapping("products")
 public class ProductController {
 	private static final Logger logger = LoggerFactory.getLogger(ProductController.class);
 	private final ProductService productService;
@@ -37,7 +37,7 @@ public class ProductController {
 		this.kafkaProducer = kafkaProducer;
 	}
 
-	@GetMapping("/list")
+	@GetMapping()
 	public ResponseEntity getProduct(@RequestParam(value="sessionid",defaultValue ="") String sessionid,
 									 @RequestParam(value="locale",required = false) String locale,
 									 @RequestParam(value="channel",defaultValue ="default",required = false) String channel,
@@ -45,7 +45,6 @@ public class ProductController {
 									 @RequestParam(value="library",defaultValue ="default",required = false) String library,
 									HttpServletRequest request, HttpServletResponse response) {
 		
-		logger.info("Entered getProduct()in ProductController");
 		kafkaProducer.sendMessage(RequestResponseLogger.logMessage("INFO", "GET request received for getProduct() ", ""));
 		kafkaProducer.sendMessage(RequestResponseLogger.logRequestResponse(request, response,sessionid,locale,channel,language,library));
 	   
@@ -63,6 +62,7 @@ public class ProductController {
 								 HttpServletRequest request, HttpServletResponse response) {
 		
 
+		logger.info("Entered updateProduct()in ProductController");
 		kafkaProducer.sendMessage(RequestResponseLogger.logMessage("INFO", "PUT request received for updateProduct() with ID: ", id));
 		kafkaProducer.sendMessage(RequestResponseLogger.logRequestResponse(request, response,sessionid,locale,channel,language,library));
 		
@@ -85,18 +85,13 @@ public class ProductController {
 		kafkaProducer.sendMessage(RequestResponseLogger.logRequestResponse(request, response,sessionid,locale,channel,language,library));
 		
 		productService.deleteProduct(id);
-		ResponseEntity entity = new ResponseEntity<>(HttpStatus.NO_CONTENT);
+		ResponseEntity entity = new ResponseEntity<>(HttpStatus.OK);
 	   
 		return entity;
 	}
 
-	@PostMapping("/{id}")
-	public ResponseEntity createProduct(@RequestParam(value="sessionid",defaultValue="") String sessionid,
-						 @RequestParam(value="locale",required = false) String locale,
-						 @RequestParam(value="channel",defaultValue ="default",required = false) String channel,
-						 @RequestParam(value="language",required = false) String language,
-						 @RequestParam(value="library",defaultValue ="default",required = false) String library,
-						 @PathVariable("id") String id, @RequestBody Product product, 
+	@PostMapping("{id}")
+	public ResponseEntity createProduct(@PathVariable("id") String id, @RequestBody Product product, 
 						 HttpServletRequest request, HttpServletResponse response) {
 		
 
@@ -105,7 +100,7 @@ public class ProductController {
 		Product createdProduct = productService.createProduct(id, product);
 		
 		ResponseEntity entity = new ResponseEntity<>(createdProduct, HttpStatus.CREATED);
-		kafkaProducer.sendMessage(RequestResponseLogger.logRequestResponse(request, response,sessionid,locale,channel,language,library));
+		//kafkaProducer.sendMessage(RequestResponseLogger.logRequestResponse(request, response,sessionid,locale,channel,language,library));
 		
 		return entity;
 	}
@@ -118,7 +113,6 @@ public class ProductController {
 			@RequestParam(value="library",defaultValue ="default",required = false) String library,
 			HttpServletRequest request, HttpServletResponse response) {
 		
-		logger.info("Entered getProductFree()in ProductController");
 		kafkaProducer.sendMessage(RequestResponseLogger.logMessage("INFO", "GET request received for getProductFree() ", ""));
 		kafkaProducer.sendMessage(RequestResponseLogger.logRequestResponse(request, response,sessionid,locale,channel,language,library));
 		
